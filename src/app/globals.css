@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #1e293b;
+  --navy: #1e293b;
+  --navy-light: #334155;
+  --navy-dark: #0f172a;
+  --accent: #f1f5f9;
+  --accent-dark: #e2e8f0;
+  --solon-orange: #f97316;
+  --solon-orange-dark: #ea580c;
+  --solon-dark: #0f172a;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  color: var(--foreground);
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+
+
+/* Solon custom utility classes */
+.solon-gradient {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+}
+
+.solon-text-gradient {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text-solon-primary {
+  color: var(--navy);
+}
+
+.btn-primary {
+  @apply px-4 py-2 rounded-md bg-[var(--navy)] text-white font-semibold hover:bg-[var(--navy-light)] transition;
+}
+
+.text-solon-orange {
+  color: var(--solon-orange);
+}
+
+.bg-solon-orange {
+  background-color: var(--solon-orange);
+}
+
+.bg-solon-orange-dark {
+  background-color: var(--solon-orange-dark);
+}
+
+.bg-solon-dark {
+  background-color: var(--solon-dark);
+}

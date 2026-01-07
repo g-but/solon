@@ -1,0 +1,150 @@
+// Prisma schema reflecting the Solon MVP database
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model organizations {
+  id                 String   @id @default(uuid())
+  name               String
+  type               String
+  bitcoin_wallet_xpub String
+  governance_model   String   @default("democratic")
+  country            String   @default("CH")
+  primary_language   String   @default("en")
+  created_at         DateTime @default(now())
+
+  members            members[]
+  bitcoin_transactions bitcoin_transactions[]
+  decisions          decisions[]
+  voting_sessions    voting_sessions[]
+  service_requests   service_requests[]
+  budget_allocations budget_allocations[]
+}
+
+model members {
+  id              String   @id @default(uuid())
+  organization_id String
+  user_id         String
+  bitcoin_address String?  @db.VarChar(62)
+  role            String
+  voting_weight   Decimal  @default(1.0)
+  joined_at       DateTime @default(now())
+  status          String   @default("active")
+
+  organization organizations @relation(fields: [organization_id], references: [id])
+  votes         votes[]
+  decisions_origin decisions[] @relation("decisions_origin_member")
+}
+
+model bitcoin_transactions {
+  id               String   @id @default(uuid())
+  organization_id  String
+  txid             String   @unique
+  amount_sats      BigInt
+  category         String
+  description      String?
+  to_address       String?  @db.VarChar(62)
+  from_address     String?  @db.VarChar(62)
+  block_height     Int?
+  transaction_date DateTime
+  created_by       String?
+  created_at       DateTime @default(now())
+
+  organization organizations @relation(fields: [organization_id], references: [id])
+}
+
+model decisions {
+  id                 String   @id @default(uuid())
+  organization_id    String
+  title              String
+  description        String?
+  decision_type      String
+  status             String   @default("proposed")
+  effectiveness_kpi  Json?
+  origin_member_id   String?
+  bitcoin_signature  String?
+  created_at         DateTime @default(now())
+  voting_deadline    DateTime?
+
+  organization organizations @relation(fields: [organization_id], references: [id])
+  origin_member members? @relation("decisions_origin_member", fields: [origin_member_id], references: [id])
+  voting_sessions voting_sessions[]
+}
+
+model voting_sessions {
+  id                         String   @id @default(uuid())
+  organization_id            String
+  decision_id                String?
+  title                      String
+  voting_type                String
+  status                     String   @default("active")
+  start_date                 DateTime @default(now())
+  end_date                   DateTime?
+  total_votes_cast           Int      @default(0)
+  bitcoin_signature_required Boolean  @default(true)
+
+  organization organizations @relation(fields: [organization_id], references: [id])
+  decision     decisions?    @relation(fields: [decision_id], references: [id])
+  votes        votes[]
+}
+
+model votes {
+  id                String   @id @default(uuid())
+  voting_session_id String
+  member_id         String
+  vote_choice       String
+  weight            Decimal  @default(1.0)
+  bitcoin_signature String
+  signed_at         DateTime @default(now())
+
+  voting_session voting_sessions @relation(fields: [voting_session_id], references: [id])
+  member         members         @relation(fields: [member_id], references: [id])
+
+  @@unique([voting_session_id, member_id])
+}
+
+model service_requests {
+  id               String   @id @default(uuid())
+  organization_id  String
+  title            String
+  description      String?
+  budget_sats      BigInt?
+  status           String   @default("open")
+  evaluation_criteria Json?
+  created_by       String?
+  created_at       DateTime @default(now())
+  deadline         DateTime?
+
+  organization organizations @relation(fields: [organization_id], references: [id])
+  service_bids service_bids[]
+}
+
+model service_bids {
+  id                 String   @id @default(uuid())
+  service_request_id String
+  bidder_name        String
+  bitcoin_address    String   @db.VarChar(62)
+  bid_amount_sats    BigInt
+  proposal           String?
+  submitted_at       DateTime @default(now())
+
+  service_request service_requests @relation(fields: [service_request_id], references: [id])
+}
+
+model budget_allocations {
+  id              String   @id @default(uuid())
+  organization_id String
+  category        String
+  allocated_sats  BigInt
+  spent_sats      BigInt   @default(0)
+  year            Int
+  approved_by_vote String?
+
+  organization organizations @relation(fields: [organization_id], references: [id])
+}
+

@@ -1,0 +1,28 @@
+{
+  "solon": {
+    "title": "SOLON",
+    "tagline": "Bitcoin-Native Governance for the Digital Age",
+    "subtag": "Completely transparent decision-making and financing for any organization.",
+    "cta_primary": "Explore the Treasury",
+    "cta_secondary": "See Live Voting",
+    "pillars": {
+      "transactions": "Transparent Transaction System",
+      "decisions": "Law Transparency Framework",
+      "marketplace": "Open Service Marketplace",
+      "voting": "Open Vote System"
+    },
+    "bullets": {
+      "transparency": "Radical Financial Transparency (Bitcoin blockchain)",
+      "democracy": "Cryptographic Democracy (Signed votes & decisions)",
+      "market": "Service Marketplace (Bitcoin-native procurement)",
+      "global": "Global by Design (No traditional banking)"
+    },
+    "bitcoin": {
+      "treasury": "Bitcoin Treasury",
+      "balance": "Balance",
+      "transactions": "Transactions",
+      "signature": "Cryptographic Signature"
+    }
+  }
+}
+

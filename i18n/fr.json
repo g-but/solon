@@ -1,0 +1,16 @@
+{
+  "solon": {
+    "title": "SOLON",
+    "tagline": "Gouvernance native Bitcoin pour l'ère numérique",
+    "subtag": "Décisions et financements totalement transparents pour toute organisation.",
+    "cta_primary": "Explorer le Trésor",
+    "cta_secondary": "Voir le vote en direct",
+    "pillars": {
+      "transactions": "Système de transactions transparent",
+      "decisions": "Cadre de transparence des lois",
+      "marketplace": "Marché ouvert de services",
+      "voting": "Système de vote ouvert"
+    }
+  }
+}
+

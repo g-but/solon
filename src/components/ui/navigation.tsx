@@ -1,0 +1,213 @@
+"use client";
+
+import { useState } from 'react';
+import Logo from './logo';
+import Link from 'next/link';
+import { NAV_ITEMS } from '@/lib/site-config';
+
+// Items are now sourced from shared site config
+
+export default function Navigation() {
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  return (
+    <nav className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50" aria-label="Main Navigation">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <Link href="/" className="flex-shrink-0">
+            <Logo size="md" />
+          </Link>
+
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex space-x-1" role="menubar" aria-label="Main Navigation">
+            {NAV_ITEMS.map((item) => (
+              <div
+                key={item.title}
+                className="relative group"
+                onMouseEnter={() => setActiveDropdown(item.title)}
+                onMouseLeave={() => setActiveDropdown(null)}
+              >
+                {item.children ? (
+                  <button
+                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-[var(--navy)] hover:bg-gray-50 rounded-md transition-colors"
+                    aria-haspopup="true"
+                    aria-expanded={activeDropdown === item.title}
+                    onFocus={() => setActiveDropdown(item.title)}
+                    onClick={() => setActiveDropdown((prev) => (prev === item.title ? null : item.title))}
+                  >
+                    {item.title}
+                    <ChevronDownIcon className="ml-1 w-4 h-4" />
+                  </button>
+                ) : (
+                  <Link
+                    href={item.href || '#'}
+                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-[var(--navy)] hover:bg-gray-50 rounded-md transition-colors"
+                  >
+                    {item.title}
+                  </Link>
+                )}
+
+                {/* Enhanced Mega Menu Dropdown with hover bridge */}
+                {item.children && activeDropdown === item.title && (
+                  <>
+                    {/* Invisible hover bridge to prevent dropdown from closing */}
+                    <div className="absolute top-full left-0 w-96 h-2 bg-transparent z-40"></div>
+                    
+                    <div className="absolute top-full left-0 w-96 bg-white shadow-xl border border-gray-100 rounded-xl py-6 mt-2 z-50" role="menu" aria-label={`${item.title} menu`}>
+                      <div className="px-6 py-2 border-b border-gray-100 mb-4">
+                        <h3 className="text-lg font-bold text-[var(--navy)] tracking-tight">{item.title}</h3>
+                        <p className="text-sm text-gray-500 mt-1">
+                          {item.title === 'Platform' && 'Core features and capabilities'}
+                          {item.title === 'Governance' && 'Democratic decision-making tools'}
+                          {item.title === 'Treasury' && 'Bitcoin-native financial management'}
+                          {item.title === 'Marketplace' && 'Transparent procurement platform'}
+                          {item.title === 'Resources' && 'Documentation and support'}
+                        </p>
+                      </div>
+                      <div className="grid grid-cols-1 gap-1">
+                        {item.children.map((child) => (
+                          <Link
+                            key={child.title}
+                            href={child.href || '#'}
+                            className="flex items-start px-6 py-3 text-sm text-gray-700 hover:text-[var(--navy)] hover:bg-gray-50 transition-all duration-200 group rounded-lg mx-2"
+                            role="menuitem"
+                          >
+                            <div className="w-2 h-2 rounded-full bg-gray-300 mr-4 mt-2 group-hover:bg-[var(--navy)] transition-colors flex-shrink-0"></div>
+                            <div className="min-w-0">
+                              <div className="font-medium text-gray-900 group-hover:text-[var(--navy)]">{child.title}</div>
+                              <div className="text-xs text-gray-500 mt-1">
+                                {child.title === 'Overview' && 'Platform introduction and key benefits'}
+                                {child.title === 'Features' && 'Complete feature breakdown'}
+                                {child.title === 'Security' && 'Cryptographic security model'}
+                                {child.title === 'Integration' && 'API and integration guides'}
+                                {child.title === 'Voting System' && 'Democratic voting mechanisms'}
+                                {child.title === 'Decision Making' && 'Proposal and consensus tools'}
+                                {child.title === 'Transparency' && 'Public audit capabilities'}
+                                {child.title === 'Audit Trail' && 'Complete transaction history'}
+                                {child.title === 'Bitcoin Treasury' && 'Multi-signature wallet management'}
+                                {child.title === 'Transaction History' && 'Complete financial records'}
+                                {child.title === 'Budget Tracking' && 'Real-time budget monitoring'}
+                                {child.title === 'Financial Reports' && 'Automated financial reporting'}
+                                {child.title === 'Service Directory' && 'Vetted service providers'}
+                                {child.title === 'Procurement' && 'Transparent buying process'}
+                                {child.title === 'Vendor Management' && 'Vendor relationships'}
+                                {child.title === 'Contract Tracking' && 'Contract lifecycle management'}
+                                {child.title === 'Documentation' && 'Complete API and user docs'}
+                                {child.title === 'About' && 'Our mission and team'}
+                                {child.title === 'Support' && 'Help and customer support'}
+                                {child.title === 'Contact' && 'Get in touch with us'}
+                              </div>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="hidden lg:flex items-center space-x-3">
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 text-sm font-medium text-[var(--navy)] hover:text-[var(--navy-light)] transition-colors"
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 text-sm font-medium bg-[var(--navy)] text-white rounded-md hover:bg-[var(--navy-light)] transition-colors"
+            >
+              Get Started
+            </Link>
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="lg:hidden">
+            <button
+              className="p-2 rounded-md text-gray-700 hover:text-[var(--navy)] hover:bg-gray-50"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle menu"
+              aria-expanded={isMobileMenuOpen}
+            >
+              <MenuIcon className="w-6 h-6" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden bg-white border-t border-gray-100" role="menu" aria-label="Mobile Navigation">
+        <div className="px-4 py-2 space-y-1">
+          {NAV_ITEMS.map((item) => (
+            <div key={item.title}>
+              {item.children ? (
+                <div className="space-y-1">
+                  <div className="px-3 py-2 text-sm font-medium text-gray-700">
+                    {item.title}
+                  </div>
+                  <div className="ml-4 space-y-1">
+                    {item.children.map((child) => (
+                      <Link
+                        key={child.title}
+                        href={child.href || '#'}
+                        className="block px-3 py-2 text-sm text-gray-600 hover:text-[var(--navy)] hover:bg-gray-50 rounded-md"
+                        role="menuitem"
+                      >
+                        {child.title}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  href={item.href || '#'}
+                  className="block px-3 py-2 text-sm font-medium text-gray-700 hover:text-[var(--navy)] hover:bg-gray-50 rounded-md"
+                  role="menuitem"
+                >
+                  {item.title}
+                </Link>
+              )}
+            </div>
+          ))}
+          <div className="border-t border-gray-100 pt-2 mt-2">
+            <Link
+              href="/dashboard"
+              className="block px-3 py-2 text-sm font-medium text-[var(--navy)] hover:bg-gray-50 rounded-md"
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/dashboard"
+              className="block px-3 py-2 text-sm font-medium bg-[var(--navy)] text-white rounded-md hover:bg-[var(--navy-light)] mt-1"
+            >
+              Get Started
+            </Link>
+          </div>
+        </div>
+      </div>
+      )}
+    </nav>
+  );
+}
+
+function ChevronDownIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+    </svg>
+  );
+}
+
+function MenuIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  );
+}
