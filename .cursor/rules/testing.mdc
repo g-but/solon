@@ -1,26 +1,74 @@
 ---
-description: "Testing guidelines - run tests, verify changes"
+description: "Testing guidelines for Solon"
 alwaysApply: false
 globs: ["**/*.test.*", "**/*.spec.*", "**/tests/**"]
 ---
 
 # Testing Rules
 
-## Before Committing
-
-1. Run the test suite
-2. Verify all tests pass
-3. Add tests for new functionality
-
-## Test Quality
-
-- Test behavior, not implementation
-- Keep tests focused and readable
-- Use descriptive test names
-
-## Commands
+## Test Commands
 
 ```bash
-npm test           # Run all tests
-npm run test:watch # Watch mode
+# Playwright E2E
+npm run test:e2e
+
+# Puppeteer smoke tests
+npm run test:puppeteer
+
+# Mega menu tests (IMPORTANT)
+npm run test:puppeteer:mega
 ```
+
+## Puppeteer Smoke Tests
+
+```javascript
+// tests/puppeteer/smoke.mjs
+import puppeteer from 'puppeteer';
+
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
+
+const browser = await puppeteer.launch();
+const page = await browser.newPage();
+
+// Test landing page
+await page.goto(BASE_URL);
+await page.waitForSelector('h1');
+
+// Test navigation
+await page.click('[data-testid="nav-treasury"]');
+await page.waitForSelector('[data-testid="treasury-balance"]');
+```
+
+## Mega Menu Tests
+
+Critical: All navigation links must work!
+
+```javascript
+// tests/puppeteer/mega-menu.mjs
+// Tests every link in the mega menu:
+// - Platform: Overview, Features, Security, Integration
+// - Governance: Voting, Decisions, Transparency, Audit
+// - Treasury: Bitcoin, Transactions, Budget, Reports
+// - Marketplace: Services, Procurement, Vendors, Contracts
+// - Resources: Docs, About, Support, Contact
+```
+
+## Test Coverage
+
+### Must Test:
+- [ ] All mega menu links resolve (no 404s)
+- [ ] Treasury displays balance
+- [ ] Voting interface loads
+- [ ] API endpoints respond correctly
+
+### Cryptographic Tests:
+- [ ] Valid signatures accepted
+- [ ] Invalid signatures rejected
+- [ ] Vote tallies accurate
+
+## Before Committing
+
+1. `npm run test:puppeteer:mega` - All navigation works
+2. `npm run build` - Build succeeds
+3. Check all pages render correctly
+4. Verify Bitcoin integration (even if stubbed)
